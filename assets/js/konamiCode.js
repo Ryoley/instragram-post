@@ -1,24 +1,40 @@
-var pattern = ['s', 'u', 's'];
-var current = 0;
-
-var keyHandler = function (event) {
-
-    // If the key isn't in the pattern, or isn't the current key in the pattern, reset
-    if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) {
-        current = 0;
-        return;
-    }
-
-    // Update how much of the pattern is complete
-    current++;
-
-    // If complete, alert and reset
-    if (pattern.length === current) {
-        current = 0;
-        document.body.style.backgroundImage = "url('https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fphotos%2Fimages%2Fnewsfeed%2F002%2F111%2F316%2Fc57.gif')";
-        document.getElementById("page-content").style.display = "none";
-    }
+// a key map of allowed keys
+var allowedKeys = {
+    83: 's',
+    85: 'u'
 };
 
-// Listen for keydown events
-document.addEventListener('keydown', keyHandler, false);
+// the 'official' Konami Code sequence
+var konamiCode = ['s', 'u', 's'];
+
+// a variable to remember the 'position' the user has reached so far.
+var konamiCodePosition = 0;
+
+// add keydown event listener
+document.addEventListener('keydown', function (e) {
+    // get the value of the key code from the key map
+    var key = allowedKeys[e.keyCode];
+    // get the value of the required key from the konami code
+    var requiredKey = konamiCode[konamiCodePosition];
+
+    // compare the key with the required key
+    if (key == requiredKey) {
+
+        // move to the next key in the konami code sequence
+        konamiCodePosition++;
+
+        // if the last key is reached, activate cheats
+        if (konamiCodePosition == konamiCode.length) {
+            activateCheats();
+            konamiCodePosition = 0;
+        }
+    } else {
+        konamiCodePosition = 0;
+    }
+});
+
+function activateCheats() {
+    document.getElementById("page-content").style.display = "none";
+    document.getElementById("amogus").style.display = "block";
+    $("#amogus")[0].src += "?autoplay=1";
+}
